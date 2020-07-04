@@ -1,0 +1,48 @@
+{% extends 'products/base.html' %}
+
+{% block content%}
+<center>
+<div class="container-fluid">
+        <div class="row">
+        {% for product in product_list.all %}
+        <figure>
+                <a href="{% url 'product_detail' product.id %}">
+                        <img src="{{ product.image.url }}" width="200" height="200" alt="{{ product.name }}"></a>
+                <figcaption>
+                        <p><h3>{{ product.name }}</h3></p>
+                        <p><h4>{{ product.price }} uah/kg </h4></p>
+                        <p>Available quantity: {{ product.stock_quantity }} kg</p>
+                        <small>{{ product.description | truncatechars:50 }}</small>
+                </figcaption>
+                {% if user.is_authenticated %}
+                        {% if user.is_staff%}
+                        <p><a href="{% url 'edit_product' product.id %}" class="btn btn-warning">Edit</a></p>
+                        {% else %}
+                        <form action="" method="post">
+                                {% csrf_token %}
+                                <label>Amount:</label>
+                                <input type="number" name="amount" value="0">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <input type="submit" class="btn btn-success" value="Buy">
+                        </form>
+                        {% endif %}
+                {% endif %}
+        </figure>
+        {% endfor %}
+        {% if user.is_authenticated %}
+        {% if user.is_staff%}
+        <div>
+                <p><a href="{% url 'new_product' %}" class="btn btn-warning">New Product</a></p>
+                <p><a href="{% url 'refunds_list' %}" class="btn btn-warning">View Refunds</a></p>
+        </div>
+        {% else %}
+        <div>
+                <p><a href="{% url 'purchases_list' %}" class="btn btn-success">Your Purchases</a></p>
+        </div>
+        {% endif %}
+        {% endif %}
+        </div>
+</div>
+</center>
+{% endblock%}

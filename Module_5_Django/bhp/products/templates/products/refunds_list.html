@@ -1,0 +1,27 @@
+{% extends 'products/base.html' %}
+
+{% block title %} Refund List {% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-5">
+        {% for refund in refund_list.all %}
+            <p>Customer: {{ refund.purchase_id.user_id.username }}</p>
+            <p>Refund: {{ refund.purchase_id.product_id.name }}</p>
+            <p>Amount: {{ refund.purchase_id.amount }}</p>
+            <p>Price: {{ refund.purchase_id.product_id.price}}</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type='hidden' name='refund_id' value='{{ refund.id }}'>
+                <input type="submit" class="btn btn-success" value="Approve" name="approve">
+                <input type="submit" class="btn btn-danger" value="Reject" name="reject">
+            </form>
+        {% empty %}
+            <p><h3>Sorry. There are no refunds in this list.<h3/></p>
+        {% endfor %}
+        <hr>
+    </div>
+</div>
+
+{% endblock %}
